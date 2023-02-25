@@ -4,8 +4,8 @@ import System.Environment (getArgs)
 import Data.Maybe (mapMaybe)
 import Text.Read (readMaybe)
 
-data Command = AddTodo [String] | CheckTodo [Int]
-data CommandParsingError = NoSuchCommand String | NoCommand
+data Command = AddTodo [String] | CheckTodo [Int] deriving (Show, Eq)
+data CommandParsingError = NoSuchCommand String | NoCommand deriving (Show, Eq)
 
 getCalledCommand :: IO (Either Command CommandParsingError)
 getCalledCommand = parseCalledCommand <$> getArgs
