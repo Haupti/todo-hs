@@ -25,7 +25,10 @@ source-repository head
 
 library
   exposed-modules:
+      Command
       Lib
+      Repository
+      Todo
   other-modules:
       Paths_todo_hs
   hs-source-dirs:
@@ -51,7 +54,8 @@ test-suite todo-hs-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      ParsingSpec
+      CommandSpec
+      RepositorySpec
       Paths_todo_hs
   hs-source-dirs:
       test

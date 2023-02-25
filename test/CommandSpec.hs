@@ -1,4 +1,4 @@
-module ParsingSpec where
+module CommandSpec where
 
 import Test.Hspec (Spec, describe, it, shouldBe)
 
