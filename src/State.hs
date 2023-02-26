@@ -5,18 +5,18 @@ module State where
 import Data.Bifunctor (first)
 import Data.Function ((&))
 
-newtype State a = State (String -> (a, String))
-modify :: (String -> String) -> State a -> State a
+newtype State s a = State (s -> (a, s))
+modify :: (s -> s) -> State s a -> State s a
 modify f (State s_as) = State (\s -> (fst . s_as $ s, f s))
-runState :: String -> State a -> (a, String)
+runState :: s -> State s a -> (a, s)
 runState initStateVal (State s_as) = s_as initStateVal
 
-instance Functor State where
-  fmap :: (a -> b) -> State a -> State b
+instance Functor (State s) where
+  fmap :: (a -> b) -> State s a -> State s b
   fmap f (State s_as) = State (\str -> s_as str & first f)
 
-instance Applicative State where
-  pure :: a -> State a
+instance Applicative (State s) where
+  pure :: a -> State s a
   pure v = State (v,)
-  (<*>) :: State (a -> b) -> State a -> State b
+  (<*>) :: State s (a -> b) -> State s a -> State s b
   (<*>) (State s_fs) (State s_as) = State (\s -> (fst (s_fs s) & \f -> f (fst (s_as s)), s))
