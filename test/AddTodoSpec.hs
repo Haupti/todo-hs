@@ -3,7 +3,7 @@ module AddTodoSpec where
 import Test.Hspec (Spec, describe, it, shouldBe)
 import Command (parseCalledCommand, CommandParsingError(..), Command(..))
 import Todo (Todo(..), TodoState(..), DoneTodo(..))
-import Lib (mapToNewTodos, addTodosToState)
+import AddTodoCommand (mapToNewTodos, addTodosToState)
 
 testState :: TodoState
 testState = TodoState { 

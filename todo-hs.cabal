@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.34.4.
+-- This file has been generated from package.yaml by hpack version 0.35.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -25,9 +25,12 @@ source-repository head
 
 library
   exposed-modules:
+      AddTodoCommand
+      CheckTodoCommand
       Command
       Lib
       Repository
+      State
       Todo
   other-modules:
       Paths_todo_hs
@@ -36,6 +39,7 @@ library
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       base >=4.7 && <5
+    , mtl
   default-language: Haskell2010
 
 executable todo-hs-exe
@@ -47,6 +51,7 @@ executable todo-hs-exe
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , mtl
     , todo-hs
   default-language: Haskell2010
 
@@ -55,6 +60,7 @@ test-suite todo-hs-test
   main-is: Spec.hs
   other-modules:
       AddTodoSpec
+      CheckTodoCommandSpec
       CommandSpec
       RepositorySpec
       Paths_todo_hs
@@ -67,5 +73,6 @@ test-suite todo-hs-test
     , hspec
     , hspec-core
     , hspec-discover
+    , mtl
     , todo-hs
   default-language: Haskell2010
