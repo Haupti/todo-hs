@@ -1,8 +1,13 @@
 module AddTodoCommand where
 
-import Todo (Todo(..), TodoState(..))
+import Todo (Todo(..), TodoState(..)) 
 import Repository (saveState, getState)
+import Logger (WithLogs)
 import Data.Function ((&))
+
+addTodos2 :: [String] -> TodoState -> WithLogs TodoState
+addTodos2 descriptions currentState = 
+  pure $ addTodosToState descriptions currentState
 
 addTodos :: [String] -> IO (Maybe TodoState)
 addTodos descriptions = do

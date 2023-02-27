@@ -29,6 +29,7 @@ library
       CheckTodoCommand
       Command
       Lib
+      Logger
       Repository
       State
       Todo
