@@ -1,17 +1,21 @@
 module Lib where
 
 import Command (CommandParsingError(..), Command(..), getCalledCommand)
+import Data.Function ((&))
 import Todo (TodoState(..))
+import State (modify)
+import Repository (getState, saveState)
+import Logger (initialLogState, WithLogs, Logs, addError)
 
 todo :: IO ()
 todo = do
   command <- getCalledCommand
-  putStrLn (handleCommand command)
+  mayState <- getState
+  case mayState of
+    Just state -> handleCommand command state
+    Nothing -> do modify (addError "ERROR: state was nothing, should have been just the state") & return 
+   & runState emptyInitialLog
 
-handleCommand :: Either Command CommandParsingError -> String
-handleCommand command = 
-  case command of
-    Right (NoSuchCommand msg) -> "ERROR! no such command: " ++ msg
-    Right NoCommand -> "ERROR! no command given"
-    Left (AddTodo _) -> "not implemented"
-    Left (CheckTodo _) -> "not implemented"
+handleCommand :: Either Command CommandParsingError -> TodoState -> WithLogs TodoState
+handleCommand command state = 
+  return state

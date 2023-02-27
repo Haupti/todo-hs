@@ -4,7 +4,6 @@ module State (modify, runState, State(..)) where
 
 import Data.Bifunctor (first)
 import Data.Function ((&))
-import Todo (TodoState)
 
 newtype State s a = State (s -> (a, s))
 
