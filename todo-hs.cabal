@@ -27,6 +27,7 @@ library
   exposed-modules:
       AddTodoCommand
       CheckTodoCommand
+      Classes
       Command
       Lib
       Logger

@@ -1,33 +1,36 @@
 module Lib where
 
-import Command (Command (..), CommandParsingError (..), getCalledCommand)
+import Command (Command (..), CommandParsingError (..), getCalledCommand, CommandResult(..))
+import Control.Monad (when)
+import Data.Maybe (fromJust, isNothing)
+import Classes (FinalStateProvider(..), Presenter(..))
 import Data.Function ((&))
-import Data.Functor (void, (<&>))
-import Logger (Logs, WithLogs, addError, initialLogState, showLogs)
+import Logger (WithLogs, initialLogState, showLogs)
 import Repository (getState, saveState)
-import State (State, modify, runState)
-import Todo (TodoState (..))
+import State (runState)
+import Todo (TodoState (..), newTodoState)
 
-noStateErrorMsg :: String
-noStateErrorMsg = "ERROR: state was nothing, should have been just the state"
+noStateError :: IO ()
+noStateError = putStrLn "ERROR: loading state failed: state was nothing, should have been just the state"
+
+stateFailedToSaveError :: IO ()
+stateFailedToSaveError = putStrLn "ERROR: saving state failed: state was nothing, should have been just the state"
 
 todo :: IO ()
 todo = do
   command <- getCalledCommand
-  mayState <- getState
-  let state = useJustOrElse mayState (handleCommand command) logErrorNoState
-      (stateOrEmpty, logs) = runState initialLogState state
+  savedState <- getState
+  when (isNothing savedState) noStateError
+  let presentState = fromJust savedState :: TodoState
+      (result, logs) = runState initialLogState (handleCommand command presentState)
   showLogs logs
-  useEither stateOrEmpty (void . saveState) return
+  present result
+  finalTodoState result & saveState >>= \saveResult -> when (isNothing saveResult) stateFailedToSaveError 
 
-logErrorNoState :: WithLogs (Either TodoState ())
-logErrorNoState = do
-  modify (addError noStateErrorMsg)
-  return (Right ())
 
-handleCommand :: Either Command CommandParsingError -> TodoState -> WithLogs (Either TodoState ())
-handleCommand command state =
-  return $ Right ()
+handleCommand :: Either Command CommandParsingError -> TodoState -> WithLogs CommandResult
+handleCommand _ _ =
+  return $ CommandResult newTodoState -- todo implement
 
 useJustOrElse :: Maybe a -> (a -> b) -> b -> b
 useJustOrElse (Just a) f _ = f a

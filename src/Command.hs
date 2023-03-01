@@ -1,6 +1,8 @@
 module Command where
 
 import System.Environment (getArgs)
+import Classes (Presenter(..), FinalStateProvider(..))
+import Todo (TodoState(..))
 import Data.Maybe (mapMaybe)
 import Text.Read (readMaybe)
 
@@ -22,3 +24,14 @@ readInts :: [String] -> [Int]
 readInts strs =
   let readIntMaybe = readMaybe :: String -> Maybe Int
    in mapMaybe readIntMaybe strs
+
+
+
+newtype CommandResult = CommandResult TodoState deriving Show
+
+instance Presenter CommandResult where
+  present = print
+
+instance FinalStateProvider CommandResult where
+  finalTodoState (CommandResult a) = a
+
