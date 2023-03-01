@@ -16,3 +16,6 @@ data TodoState = TodoState
     doneTodos :: [DoneTodo]
   }
   deriving (Read, Show, Eq)
+
+newTodoState :: TodoState
+newTodoState = TodoState [] []
