@@ -1,12 +1,13 @@
 module Command where
 
-import System.Environment (getArgs)
-import Classes (Presenter(..), FinalStateProvider(..))
-import Todo (TodoState(..))
+import Classes (FinalStateProvider (..), Presenter (..))
 import Data.Maybe (mapMaybe)
+import System.Environment (getArgs)
 import Text.Read (readMaybe)
+import Todo (TodoState (..))
 
 data Command = AddTodo [String] | CheckTodo [Int] deriving (Show, Eq)
+
 data CommandParsingError = NoSuchCommand String | NoCommand deriving (Show, Eq)
 
 getCalledCommand :: IO (Either Command CommandParsingError)
@@ -16,22 +17,18 @@ parseCalledCommand :: [String] -> Either Command CommandParsingError
 parseCalledCommand [] = Right NoCommand
 parseCalledCommand (x : xs)
   | x == "add" && not (null xs) = Left $ AddTodo xs
-  | x == "done" && not (null xs) = Left $ CheckTodo (readInts xs)
+  | x == "done" && not (null xs) = Left $ CheckTodo (readIntAndDiscardFailureSilently xs)
   | otherwise = Right $ NoSuchCommand x
 
--- discards failures silently
-readInts :: [String] -> [Int]
-readInts strs =
+readIntAndDiscardFailureSilently :: [String] -> [Int]
+readIntAndDiscardFailureSilently strs =
   let readIntMaybe = readMaybe :: String -> Maybe Int
    in mapMaybe readIntMaybe strs
 
-
-
-newtype CommandResult = CommandResult TodoState deriving Show
+newtype CommandResult = CommandResult TodoState deriving (Show)
 
 instance Presenter CommandResult where
   present = print
 
 instance FinalStateProvider CommandResult where
   finalTodoState (CommandResult a) = a
-

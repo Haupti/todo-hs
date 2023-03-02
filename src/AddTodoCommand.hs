@@ -1,13 +1,31 @@
 module AddTodoCommand where
 
-import Todo (Todo(..), TodoState(..)) 
-import Repository (saveState, getState)
-import Logger (WithLogs)
+import Classes (FinalStateProvider (..), Presenter (..))
 import Data.Function ((&))
+import Logger (WithLogs)
+import Repository (getState, saveState)
+import Todo (Todo (..), TodoState (..))
 
-addTodos2 :: [String] -> TodoState -> WithLogs TodoState
-addTodos2 descriptions currentState = 
-  pure $ addTodosToState descriptions currentState
+data AddTodoCommandResult = AddTodoCommandResult
+  { addedTodos :: [Todo],
+    todoStateAfterAdding :: TodoState
+  }
+
+instance FinalStateProvider AddTodoCommandResult where
+  finalTodoState = todoStateAfterAdding
+
+instance Presenter AddTodoCommandResult where
+  present (AddTodoCommandResult added _) = map (\td -> putStrLn $ show (orderNumber td) ++ todoDescription td) added & sequence_
+
+addTodos2 :: [String] -> TodoState -> WithLogs AddTodoCommandResult
+addTodos2 descriptions currentState =
+  pure $ addTodosToState2 descriptions currentState
+
+addTodosToState2 :: [String] -> TodoState -> AddTodoCommandResult
+addTodosToState2 descriptions state =
+  let startNumber = map orderNumber (todos state) & maximum
+      newTodos = mapToNewTodos descriptions (startNumber + 1)
+   in AddTodoCommandResult {todoStateAfterAdding = state {todos = todos state ++ newTodos}, addedTodos = newTodos}
 
 addTodos :: [String] -> IO (Maybe TodoState)
 addTodos descriptions = do
@@ -18,12 +36,11 @@ addTodos descriptions = do
     Nothing -> return Nothing
 
 addTodosToState :: [String] -> TodoState -> TodoState
-addTodosToState descriptions state = 
-    let startNumber = map orderNumber (todos state) & maximum
-        newTodos = mapToNewTodos descriptions (startNumber + 1)
-         in
-          state { todos = todos state ++ newTodos }
+addTodosToState descriptions state =
+  let startNumber = map orderNumber (todos state) & maximum
+      newTodos = mapToNewTodos descriptions (startNumber + 1)
+   in state {todos = todos state ++ newTodos}
 
 mapToNewTodos :: [String] -> Int -> [Todo]
-mapToNewTodos (x:xs) number = Todo { orderNumber = number, todoDescription = x } : mapToNewTodos xs (number + 1)
-mapToNewTodos [] number = []
+mapToNewTodos (x : xs) number = Todo {orderNumber = number, todoDescription = x} : mapToNewTodos xs (number + 1)
+mapToNewTodos [] _ = []
