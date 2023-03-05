@@ -4,7 +4,7 @@ import Test.Hspec (Spec, describe, it, shouldBe)
 import State (runState)
 import Logger (initialLogState, Logs(..))
 import Todo (Todo(..), TodoState(..), DoneTodo(..))
-import CheckTodoCommand (getTodosByNumber, checkTodosFromState, notContained, checkTodosFromState2)
+import CheckTodoCommand (CheckTodoCommandResult(..), getTodosByNumber, checkTodosFromState, notContained, checkTodosFromState2)
 
 testState :: TodoState
 testState = TodoState { 
@@ -37,13 +37,18 @@ spec = do
                     Todo { orderNumber = 3, todoDescription = "existed before 3"}
                     ]
     it "checks todo from state" $ do
-        checkTodosFromState [4,2] testState `shouldBe` expectedState
+        let actualStateWithLogs = checkTodosFromState2 [4,2] testState
+            (commandResult, logState) = runState initialLogState actualStateWithLogs
+            CheckTodoCommandResult checkedTodos todoState = commandResult
+            in
+               (checkedTodos, todoState) `shouldBe` ([DoneTodo "existed before 2", DoneTodo "existed before 4"], expectedState)
 
     it "todos not found but should be checked" $ do
         notContained [4,2, 31] testState `shouldBe` [31]
 
     it "check todos from state and log not found" $ do
         let actualStateWithLogs = checkTodosFromState2 [4,2, 31] testState
-            (todoState, logState) = runState initialLogState actualStateWithLogs
+            (commandResult, logState) = runState initialLogState actualStateWithLogs
+            CheckTodoCommandResult checkedTodos todoState = commandResult
             in
                 (todoState, info logState) `shouldBe` (expectedState, ["INFO: can not check todos: [31]. not found."])
