@@ -6,7 +6,7 @@ data Logs = Logs
   { err :: [String],
     warn :: [String],
     info :: [String]
-  }
+  } deriving (Show, Eq)
 
 addInfo :: String -> Logs -> Logs
 addInfo msg logs = logs {info = info logs ++ [msg]}
