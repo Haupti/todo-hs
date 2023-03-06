@@ -4,7 +4,7 @@ import Test.Hspec (Spec, describe, it, shouldBe)
 import State (runState)
 import Logger (initialLogState, Logs(..))
 import Todo (Todo(..), TodoState(..), DoneTodo(..))
-import CheckTodoCommand (CheckTodoCommandResult(..), getTodosByNumber, checkTodosFromState, notContained, checkTodosFromState2)
+import CheckTodoCommand (CheckTodoCommandResult(..), getTodosByNumber, checkTodosFromState, notContained)
 
 testState :: TodoState
 testState = TodoState { 
@@ -37,7 +37,7 @@ spec = do
                     Todo { orderNumber = 3, todoDescription = "existed before 3"}
                     ]
     it "checks todo from state" $ do
-        let actualStateWithLogs = checkTodosFromState2 [4,2] testState
+        let actualStateWithLogs = checkTodosFromState [4,2] testState
             (commandResult, logState) = runState initialLogState actualStateWithLogs
             CheckTodoCommandResult checkedTodos todoState = commandResult
             in
@@ -47,7 +47,7 @@ spec = do
         notContained [4,2, 31] testState `shouldBe` [31]
 
     it "check todos from state and log not found" $ do
-        let actualStateWithLogs = checkTodosFromState2 [4,2, 31] testState
+        let actualStateWithLogs = checkTodosFromState [4,2, 31] testState
             (commandResult, logState) = runState initialLogState actualStateWithLogs
             CheckTodoCommandResult checkedTodos todoState = commandResult
             in

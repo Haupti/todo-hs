@@ -7,7 +7,7 @@ import Data.Function ((&))
 import State (runState)
 import Command (parseCalledCommand, CommandParsingError(..), Command(..))
 import Todo (Todo(..), TodoState(..), DoneTodo(..))
-import AddTodoCommand (mapToNewTodos, addTodosToState2, AddTodoCommandResult(..), addTodos2)
+import AddTodoCommand (mapToNewTodos, addTodosToState, AddTodoCommandResult(..), addTodos)
 
 testState :: TodoState
 testState = TodoState { 
@@ -38,9 +38,9 @@ spec = do
             Todo { orderNumber = 4, todoDescription = "description2"}
             ]
     it "add new todos to state" $ do
-        (addTodosToState2 ["desc1", "desc2"] testState & todoStateAfterAdding) `shouldBe` expectedState
+        (addTodosToState ["desc1", "desc2"] testState & todoStateAfterAdding) `shouldBe` expectedState
     it "does not add logs" $ do
-        let addTodosStateWithLogs = addTodos2 ["desc1", "desc2"] testState
+        let addTodosStateWithLogs = addTodos ["desc1", "desc2"] testState
             (commandResult, logs) = runState initialLogState addTodosStateWithLogs
             AddTodoCommandResult addedTodos resultState = commandResult
             in 

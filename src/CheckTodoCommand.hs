@@ -3,9 +3,8 @@ module CheckTodoCommand where
 import Classes (FinalStateProvider (..), Presenter (..))
 import Control.Monad (unless)
 import Data.Function ((&))
-import Data.List (elem, (\\))
+import Data.List ((\\))
 import Logger (WithLogs, addInfo)
-import Repository (getState, saveState)
 import State (modify)
 import Todo (DoneTodo (..), Todo (..), TodoState (..))
 
@@ -20,13 +19,8 @@ instance FinalStateProvider CheckTodoCommandResult where
 instance Presenter CheckTodoCommandResult where
   present (CheckTodoCommandResult checked _) = mapM_ (putStrLn . doneDescription) checked
 
-checkTodos :: [Int] -> IO (Maybe TodoState)
-checkTodos orderNumbers = do
-  state <- getState
-  return $ checkTodosFromState orderNumbers <$> state
-
-checkTodosFromState2 :: [Int] -> TodoState -> WithLogs CheckTodoCommandResult
-checkTodosFromState2 nums state =
+checkTodosFromState :: [Int] -> TodoState -> WithLogs CheckTodoCommandResult
+checkTodosFromState nums state =
   let toCheck = getTodosByNumber nums state :: [Todo]
       asChecked = map (\(Todo _ description) -> DoneTodo {doneDescription = description}) toCheck
       notFound = notContained nums state
@@ -41,15 +35,6 @@ checkTodosFromState2 nums state =
                   },
               checkedTodos = asChecked
             }
-
-checkTodosFromState :: [Int] -> TodoState -> TodoState
-checkTodosFromState nums state =
-  let toCheck = getTodosByNumber nums state :: [Todo]
-      asChecked = map (\(Todo _ description) -> DoneTodo {doneDescription = description}) toCheck
-   in state
-        { todos = todos state \\ toCheck,
-          doneTodos = doneTodos state ++ asChecked
-        }
 
 getTodosByNumber :: [Int] -> TodoState -> [Todo]
 getTodosByNumber orderNumbers state =

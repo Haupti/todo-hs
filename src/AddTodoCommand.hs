@@ -17,29 +17,15 @@ instance FinalStateProvider AddTodoCommandResult where
 instance Presenter AddTodoCommandResult where
   present (AddTodoCommandResult added _) = mapM_ (\td -> putStrLn $ show (orderNumber td) ++ todoDescription td) added
 
-addTodos2 :: [String] -> TodoState -> WithLogs AddTodoCommandResult
-addTodos2 descriptions currentState =
-  pure $ addTodosToState2 descriptions currentState
+addTodos :: [String] -> TodoState -> WithLogs AddTodoCommandResult
+addTodos descriptions currentState =
+  pure $ addTodosToState descriptions currentState
 
-addTodosToState2 :: [String] -> TodoState -> AddTodoCommandResult
-addTodosToState2 descriptions state =
-  let startNumber = map orderNumber (todos state) & maximum
-      newTodos = mapToNewTodos descriptions (startNumber + 1)
-   in AddTodoCommandResult {todoStateAfterAdding = state {todos = todos state ++ newTodos}, addedTodos = newTodos}
-
-addTodos :: [String] -> IO (Maybe TodoState)
-addTodos descriptions = do
-  state <- getState
-  let mayState = addTodosToState descriptions <$> state :: Maybe TodoState
-  case mayState of
-    Just justState -> saveState justState
-    Nothing -> return Nothing
-
-addTodosToState :: [String] -> TodoState -> TodoState
+addTodosToState :: [String] -> TodoState -> AddTodoCommandResult
 addTodosToState descriptions state =
   let startNumber = map orderNumber (todos state) & maximum
       newTodos = mapToNewTodos descriptions (startNumber + 1)
-   in state {todos = todos state ++ newTodos}
+   in AddTodoCommandResult {todoStateAfterAdding = state {todos = todos state ++ newTodos}, addedTodos = newTodos}
 
 mapToNewTodos :: [String] -> Int -> [Todo]
 mapToNewTodos (x : xs) number = Todo {orderNumber = number, todoDescription = x} : mapToNewTodos xs (number + 1)
