@@ -19,6 +19,9 @@ instance FinalStateProvider CheckTodoCommandResult where
 instance Presenter CheckTodoCommandResult where
   present (CheckTodoCommandResult checked _) = mapM_ (putStrLn . doneDescription) checked
 
+checkTodos :: [Int] -> TodoState -> WithLogs CheckTodoCommandResult
+checkTodos = checkTodosFromState
+
 checkTodosFromState :: [Int] -> TodoState -> WithLogs CheckTodoCommandResult
 checkTodosFromState nums state =
   let toCheck = getTodosByNumber nums state :: [Todo]
