@@ -5,7 +5,6 @@ import TestUtils (asExpectation)
 import Logger (Logs(..), initialLogState)
 import Data.Function ((&))
 import State (runState)
-import Command (parseCalledCommand, CommandParsingError(..), Command(..))
 import Todo (Todo(..), TodoState(..), DoneTodo(..))
 import AddTodoCommand (mapToNewTodos, addTodosToState, AddTodoCommandResult(..), addTodos)
 

@@ -21,6 +21,7 @@ commandParsingFailedError cmdErr =
   case cmdErr of
     NoCommand -> putStrLn "ERROR: no command given"
     NoSuchCommand str -> putStrLn ("ERROR: no such command: " ++ str)
+    MissingParamError cmd paramType -> putStrLn ("ERROR: " ++ cmd ++ " requires parameters of type: " ++ paramType)
 
 
 todo :: IO ()
@@ -28,9 +29,9 @@ todo = do
   commandParsingResult <- getCalledCommand
   savedState <- getState
 
-  --checking preconditions
   logIfNoState savedState
   logIfError commandParsingResult
+
   case (commandParsingResult, savedState) of
     (Left command, Just presentState) -> do
         let (result, logs) = runState initialLogState (handleCommand command presentState)

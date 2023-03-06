@@ -8,7 +8,7 @@ import Todo (TodoState (..))
 
 data Command = AddTodo [String] | CheckTodo [Int] deriving (Show, Eq)
 
-data CommandParsingError = NoSuchCommand String | NoCommand deriving (Show, Eq)
+data CommandParsingError = NoSuchCommand String | MissingParamError String String | NoCommand deriving (Show, Eq)
 
 getCalledCommand :: IO (Either Command CommandParsingError)
 getCalledCommand = parseCalledCommand <$> getArgs
@@ -17,7 +17,9 @@ parseCalledCommand :: [String] -> Either Command CommandParsingError
 parseCalledCommand [] = Right NoCommand
 parseCalledCommand (x : xs)
   | x == "add" && not (null xs) = Left $ AddTodo xs
+  | x == "add" && null xs = Right $ MissingParamError "add" "integer | [integer]"
   | x == "done" && not (null xs) = Left $ CheckTodo (readIntAndDiscardFailureSilently xs)
+  | x == "done" && null xs = Right $ MissingParamError "done" "integer | [integer]"
   | otherwise = Right $ NoSuchCommand x
 
 readIntAndDiscardFailureSilently :: [String] -> [Int]
