@@ -1,6 +1,6 @@
 module Command where
 
-import Classes (FinalStateProvider, Presenter)
+import Classes (FinalStateProvider(..), Presenter(..), PresentableProvider (providePresentable))
 import Data.Maybe (mapMaybe)
 import System.Environment (getArgs)
 import Text.Read (readMaybe)
@@ -27,5 +27,16 @@ readIntAndDiscardFailureSilently strs =
   let readIntMaybe = readMaybe :: String -> Maybe Int
    in mapMaybe readIntMaybe strs
 
-data CommandResult where
-  CommandResult :: (Presenter a, FinalStateProvider a) => a -> CommandResult
+data CommandResult = CommandResult {
+  presentable :: String,
+  finalState :: TodoState
+}
+
+instance PresentableProvider CommandResult where
+  providePresentable = presentable
+
+instance Presenter CommandResult where
+  present = putStrLn . providePresentable
+
+instance FinalStateProvider CommandResult where
+  provideFinalState = finalState

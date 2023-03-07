@@ -1,9 +1,8 @@
 module AddTodoCommand where
 
-import Classes (FinalStateProvider (..), Presenter (..))
+import Classes (FinalStateProvider (..), PresentableProvider (..))
 import Data.Function ((&))
 import Logger (WithLogs)
-import Repository (getState, saveState)
 import Todo (Todo (..), TodoState (..))
 
 data AddTodoCommandResult = AddTodoCommandResult
@@ -12,10 +11,10 @@ data AddTodoCommandResult = AddTodoCommandResult
   }
 
 instance FinalStateProvider AddTodoCommandResult where
-  finalTodoState = todoStateAfterAdding
+  provideFinalState = todoStateAfterAdding
 
-instance Presenter AddTodoCommandResult where
-  present (AddTodoCommandResult added _) = mapM_ (\td -> putStrLn $ show (orderNumber td) ++ todoDescription td) added
+instance PresentableProvider AddTodoCommandResult where
+  providePresentable (AddTodoCommandResult added _) = unlines $ map (\td -> show (orderNumber td) ++ todoDescription td) added
 
 addTodos :: [String] -> TodoState -> WithLogs AddTodoCommandResult
 addTodos descriptions currentState =

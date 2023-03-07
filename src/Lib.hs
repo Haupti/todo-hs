@@ -1,12 +1,12 @@
 module Lib where
 
+import Command (Command (..), CommandParsingError (..), getCalledCommand, CommandResult(..))
 import AddTodoCommand (addTodos)
 import CheckTodoCommand (checkTodos)
-import Classes (FinalStateProvider (..), Presenter (..))
-import Command (Command (..), CommandParsingError (..), CommandResult (..), getCalledCommand)
 import Control.Monad (when)
-import Data.Function ((&))
 import Data.Maybe (isNothing)
+import Classes (FinalStateProvider(..), Presenter(..), PresentableProvider (providePresentable))
+import Data.Function ((&))
 import Logger (WithLogs, initialLogState, showLogs)
 import Repository (getState, saveState)
 import State (runState)
@@ -25,6 +25,7 @@ commandParsingFailedError cmdErr =
     NoSuchCommand str -> putStrLn ("ERROR: no such command: " ++ str)
     MissingParamError cmd paramType -> putStrLn ("ERROR: " ++ cmd ++ " requires parameters of type: " ++ paramType)
 
+
 todo :: IO ()
 todo = do
   commandParsingResult <- getCalledCommand
@@ -35,26 +36,24 @@ todo = do
 
   case (commandParsingResult, savedState) of
     (Left command, Just presentState) -> do
-      let (result, logs) = runState initialLogState (handleCommand command presentState)
-      showLogs logs
-      present result
-      finalTodoState result & saveOrLogError
+        let (result, logs) = runState initialLogState (handleCommand command presentState)
+        showLogs logs
+        present result
+        provideFinalState result & saveOrLogError
     _ -> return ()
-
+  
 saveOrLogError :: TodoState -> IO ()
 saveOrLogError state = do
-  saveResult <- saveState state
-  when (isNothing saveResult) stateFailedToSaveError
+   saveResult <- saveState state
+   when (isNothing saveResult) stateFailedToSaveError 
 
-handleCommand cmd tds = return $
-  CommandResult $
-    case cmd of
-      AddTodo strs -> addTodos strs tds
-      CheckTodo ints -> checkTodos ints tds
+handleCommand :: Command -> TodoState -> WithLogs CommandResult
+handleCommand cmd tds = case cmd of
+  AddTodo todosRaw -> toResult <$> addTodos todosRaw tds
+  CheckTodo todosToCheck -> toResult <$> checkTodos todosToCheck tds
 
-mapRight :: (b -> c) -> Either a b -> Either a c
-mapRight fn (Right b) = Right (fn b)
-mapRight _ (Left a) = Left a
+toResult :: (PresentableProvider a, FinalStateProvider a) => a -> CommandResult
+toResult a = CommandResult { presentable = providePresentable a, finalState = provideFinalState a}
 
 logIfError :: Either Command CommandParsingError -> IO ()
 logIfError (Right cmdErr) = commandParsingFailedError cmdErr

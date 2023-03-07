@@ -1,6 +1,6 @@
 module CheckTodoCommand where
 
-import Classes (FinalStateProvider (..), Presenter (..))
+import Classes (FinalStateProvider (..), PresentableProvider (..))
 import Control.Monad (unless)
 import Data.Function ((&))
 import Data.List ((\\))
@@ -14,10 +14,10 @@ data CheckTodoCommandResult = CheckTodoCommandResult
   }
 
 instance FinalStateProvider CheckTodoCommandResult where
-  finalTodoState = todoStateAfterChecking
+  provideFinalState = todoStateAfterChecking
 
-instance Presenter CheckTodoCommandResult where
-  present (CheckTodoCommandResult checked _) = mapM_ (putStrLn . doneDescription) checked
+instance PresentableProvider CheckTodoCommandResult where
+  providePresentable (CheckTodoCommandResult checked _) = unlines $ map doneDescription checked
 
 checkTodos :: [Int] -> TodoState -> WithLogs CheckTodoCommandResult
 checkTodos = checkTodosFromState
