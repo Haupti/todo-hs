@@ -1,10 +1,12 @@
 module Lib where
 
-import Command (Command (..), CommandParsingError (..), getCalledCommand, CommandResult(..))
+import AddTodoCommand (addTodos)
+import CheckTodoCommand (checkTodos)
+import Classes (FinalStateProvider (..), Presenter (..))
+import Command (Command (..), CommandParsingError (..), CommandResult (..), getCalledCommand)
 import Control.Monad (when)
-import Data.Maybe (isNothing)
-import Classes (FinalStateProvider(..), Presenter(..))
 import Data.Function ((&))
+import Data.Maybe (isNothing)
 import Logger (WithLogs, initialLogState, showLogs)
 import Repository (getState, saveState)
 import State (runState)
@@ -23,7 +25,6 @@ commandParsingFailedError cmdErr =
     NoSuchCommand str -> putStrLn ("ERROR: no such command: " ++ str)
     MissingParamError cmd paramType -> putStrLn ("ERROR: " ++ cmd ++ " requires parameters of type: " ++ paramType)
 
-
 todo :: IO ()
 todo = do
   commandParsingResult <- getCalledCommand
@@ -34,20 +35,22 @@ todo = do
 
   case (commandParsingResult, savedState) of
     (Left command, Just presentState) -> do
-        let (result, logs) = runState initialLogState (handleCommand command presentState)
-        showLogs logs
-        present result
-        finalTodoState result & saveOrLogError
+      let (result, logs) = runState initialLogState (handleCommand command presentState)
+      showLogs logs
+      present result
+      finalTodoState result & saveOrLogError
     _ -> return ()
 
-  
 saveOrLogError :: TodoState -> IO ()
 saveOrLogError state = do
-   saveResult <- saveState state
-   when (isNothing saveResult) stateFailedToSaveError 
+  saveResult <- saveState state
+  when (isNothing saveResult) stateFailedToSaveError
 
-handleCommand :: Command -> TodoState -> WithLogs CommandResult
-handleCommand cmd tds = return $ CommandResult tds
+handleCommand cmd tds = return $
+  CommandResult $
+    case cmd of
+      AddTodo strs -> addTodos strs tds
+      CheckTodo ints -> checkTodos ints tds
 
 mapRight :: (b -> c) -> Either a b -> Either a c
 mapRight fn (Right b) = Right (fn b)
