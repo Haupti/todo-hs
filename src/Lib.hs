@@ -25,7 +25,6 @@ commandParsingFailedError cmdErr =
     NoSuchCommand str -> putStrLn ("ERROR: no such command: " ++ str)
     MissingParamError cmd paramType -> putStrLn ("ERROR: " ++ cmd ++ " requires parameters of type: " ++ paramType)
 
-
 todo :: IO ()
 todo = do
   commandParsingResult <- getCalledCommand
@@ -51,9 +50,9 @@ handleCommand :: Command -> TodoState -> WithLogs CommandResult
 handleCommand cmd tds = case cmd of
   AddTodo todosRaw -> toResult <$> addTodos todosRaw tds
   CheckTodo todosToCheck -> toResult <$> checkTodos todosToCheck tds
-
-toResult :: (PresentableProvider a, FinalStateProvider a) => a -> CommandResult
-toResult a = CommandResult { presentable = providePresentable a, finalState = provideFinalState a}
+  where
+    toResult :: (PresentableProvider a, FinalStateProvider a) => a -> CommandResult
+    toResult a = CommandResult { presentable = providePresentable a, finalState = provideFinalState a}
 
 logIfError :: Either Command CommandParsingError -> IO ()
 logIfError (Right cmdErr) = commandParsingFailedError cmdErr

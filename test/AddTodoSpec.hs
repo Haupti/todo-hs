@@ -5,7 +5,7 @@ import TestUtils (asExpectation)
 import Logger (Logs(..), initialLogState)
 import Data.Function ((&))
 import State (runState)
-import Todo (Todo(..), TodoState(..), DoneTodo(..))
+import Todo (Todo(..), TodoState(..), DoneTodo(..), newTodoState)
 import AddTodoCommand (mapToNewTodos, addTodosToState, AddTodoCommandResult(..), addTodos)
 
 testState :: TodoState
@@ -28,6 +28,15 @@ expectedState = TodoState {
                 doneTodos = [DoneTodo { doneDescription = "done"}]
         }
 
+expectedState2 :: TodoState
+expectedState2 = TodoState { 
+                todos = [
+                    Todo { orderNumber = 1, todoDescription = "desc1"},
+                    Todo { orderNumber = 2, todoDescription = "desc2"}
+                ],
+                doneTodos = []
+        }
+
 spec :: Spec
 spec = do
   describe "add todo" $ do
@@ -36,8 +45,12 @@ spec = do
             Todo { orderNumber = 3, todoDescription = "description1"},
             Todo { orderNumber = 4, todoDescription = "description2"}
             ]
+    it "does nothing on empty list" $ do
+        mapToNewTodos [] 3 `shouldBe` []
     it "add new todos to state" $ do
         (addTodosToState ["desc1", "desc2"] testState & todoStateAfterAdding) `shouldBe` expectedState
+    it "add new todos to new state" $ do
+        (addTodosToState ["desc1", "desc2"] newTodoState & todoStateAfterAdding) `shouldBe` expectedState2
     it "does not add logs" $ do
         let addTodosStateWithLogs = addTodos ["desc1", "desc2"] testState
             (commandResult, logs) = runState initialLogState addTodosStateWithLogs

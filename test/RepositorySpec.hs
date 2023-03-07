@@ -1,7 +1,7 @@
 module RepositorySpec where
 
-import Test.Hspec (Spec, describe, it, shouldBe, before)
-import Todo (Todo(..), DoneTodo(..), TodoState(..))
+import Test.Hspec (SpecWith, Spec, describe, it, shouldBe, before)
+import Todo (Todo(..), DoneTodo(..), TodoState(..), newTodoState)
 import System.Directory (removeFile)
 import Repository (saveStateToFile, getStateFromFile)
 
@@ -14,6 +14,7 @@ testState = TodoState {
     doneTodos = [DoneTodo { doneDescription = "done todo for test"}]
 }
 
+beforeSpecHook :: SpecWith () -> Spec
 beforeSpecHook = before (removeFile testFileName)
 
 spec :: Spec
@@ -28,4 +29,13 @@ spec = do
         writeFile testFileName (show testState)
         maybeState <- getStateFromFile testFileName
         maybeState `shouldBe` Just testState
+  describe "repository that starts with no file present" $ beforeSpecHook $ do
+    it "read: creates file and returns empty state" $ do
+        maybeState <- getStateFromFile testFileName
+        maybeState `shouldBe` Just newTodoState
+  describe "repository that starts with no file present" $ beforeSpecHook $ do
+    it "save: creates file and returns empty state" $ do
+        maybeState <- saveStateToFile testFileName newTodoState
+        maybeState `shouldBe` Just newTodoState
+
 
