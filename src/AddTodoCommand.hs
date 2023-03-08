@@ -14,7 +14,7 @@ instance FinalStateProvider AddTodoCommandResult where
   provideFinalState = todoStateAfterAdding
 
 instance PresentableProvider AddTodoCommandResult where
-  providePresentable (AddTodoCommandResult added _) = unlines $ map (\td -> show (orderNumber td) ++ todoDescription td) added
+  providePresentable (AddTodoCommandResult added _) = unlines $ map (\td -> show (orderNumber td) ++ " " ++ todoDescription td) added
 
 addTodos :: [String] -> TodoState -> WithLogs AddTodoCommandResult
 addTodos descriptions currentState =

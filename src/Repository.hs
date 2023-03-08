@@ -1,15 +1,13 @@
 module Repository where
 
+import Config (filepath)
+import Control.Exception (IOException, catch)
 import Data.Functor ((<&>))
 import Text.Read (readMaybe)
-import Control.Exception (catch, IOException)
 import Todo (TodoState, newTodoState)
 
-stateFile :: String
-stateFile = "data.hsrn"
-
 getState :: IO (Maybe TodoState)
-getState = getStateFromFile stateFile
+getState = filepath >>= getStateFromFile
 
 getStateFromFile :: FilePath -> IO (Maybe TodoState)
 getStateFromFile filepath =
@@ -21,7 +19,9 @@ getStateFromFile filepath =
         )
 
 saveState :: TodoState -> IO (Maybe TodoState)
-saveState = saveStateToFile stateFile
+saveState todoState = do
+  fp <- filepath
+  saveStateToFile fp todoState
 
 saveStateToFile :: FilePath -> TodoState -> IO (Maybe TodoState)
 saveStateToFile filepath state =

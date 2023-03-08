@@ -29,7 +29,9 @@ library
       CheckTodoCommand
       Classes
       Command
+      Config
       Lib
+      ListTodosCommand
       Logger
       Repository
       State
@@ -64,6 +66,7 @@ test-suite todo-hs-test
       AddTodoSpec
       CheckTodoCommandSpec
       CommandSpec
+      ListTodosCommandSpec
       RepositorySpec
       TestUtils
       Paths_todo_hs
