@@ -2,13 +2,13 @@ module Command where
 
 import AddTodoCommand (addTodos)
 import CheckTodoCommand (checkTodos)
-import Classes (FinalStateProvider (..), PresentableProvider (providePresentable), Presenter (..))
+import Classes (PresentableProvider (providePresentable), Presenter (..))
 import Data.Maybe (mapMaybe)
 import ListTodosCommand (listTodos)
 import Logger (WithLogs)
 import System.Environment (getArgs)
 import Text.Read (readMaybe)
-import Todo (TodoState (..))
+import Todo (TodoState (..), FinalStateProvider(..))
 
 data Command = AddTodo [String] | CheckTodo [Int] | ListTodos deriving (Show, Eq)
 
@@ -21,7 +21,7 @@ parseCalledCommand (x : xs)
   | x == "add" && null xs = Right $ MissingParamError "add" "string | [string]"
   | x == "done" && not (null xs) = Left $ CheckTodo (readIntAndDiscardFailureSilently xs)
   | x == "done" && null xs = Right $ MissingParamError "done" "integer | [integer]"
-  | x == "list" && null xs = Left $ ListTodos
+  | x == "list" && null xs = Left ListTodos
   | x == "list" && not (null xs) = Right $ TooManyParams "list" xs
   | otherwise = Right $ NoSuchCommand x
 

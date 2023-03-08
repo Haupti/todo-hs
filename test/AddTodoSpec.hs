@@ -7,6 +7,9 @@ import Data.Function ((&))
 import State (runState)
 import Todo (Todo(..), TodoState(..), DoneTodo(..), newTodoState)
 import AddTodoCommand (mapToNewTodos, addTodosToState, AddTodoCommandResult(..), addTodos)
+import TimeTestData (testLocalTime)
+
+newTodoStateCurrentTime = newTodoState { currentDate = testLocalTime }
 
 testState :: TodoState
 testState = TodoState { 
@@ -14,7 +17,8 @@ testState = TodoState {
                     Todo { orderNumber = 1, todoDescription = "existed before 1"},
                     Todo { orderNumber = 2, todoDescription = "existed before 2"}
                 ],
-                doneTodos = [DoneTodo { doneDescription = "done"}]
+                doneTodos = [DoneTodo { doneDescription = "done"}],
+                currentDate = testLocalTime
         }
 
 expectedState :: TodoState
@@ -25,7 +29,8 @@ expectedState = TodoState {
                     Todo { orderNumber = 3, todoDescription = "desc1"},
                     Todo { orderNumber = 4, todoDescription = "desc2"}
                 ],
-                doneTodos = [DoneTodo { doneDescription = "done"}]
+                doneTodos = [DoneTodo { doneDescription = "done"}],
+                currentDate = testLocalTime
         }
 
 expectedState2 :: TodoState
@@ -34,7 +39,8 @@ expectedState2 = TodoState {
                     Todo { orderNumber = 1, todoDescription = "desc1"},
                     Todo { orderNumber = 2, todoDescription = "desc2"}
                 ],
-                doneTodos = []
+                doneTodos = [],
+                currentDate = testLocalTime
         }
 
 spec :: Spec
@@ -50,7 +56,7 @@ spec = do
     it "add new todos to state" $ do
         (addTodosToState ["desc1", "desc2"] testState & todoStateAfterAdding) `shouldBe` expectedState
     it "add new todos to new state" $ do
-        (addTodosToState ["desc1", "desc2"] newTodoState & todoStateAfterAdding) `shouldBe` expectedState2
+        (addTodosToState ["desc1", "desc2"] newTodoStateCurrentTime & todoStateAfterAdding) `shouldBe` expectedState2
     it "does not add logs" $ do
         let addTodosStateWithLogs = addTodos ["desc1", "desc2"] testState
             (commandResult, logs) = runState initialLogState addTodosStateWithLogs

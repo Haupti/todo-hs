@@ -1,9 +1,9 @@
 module AddTodoCommand where
 
-import Classes (FinalStateProvider (..), PresentableProvider (..))
+import Classes (PresentableProvider (..))
 import Data.Function ((&))
 import Logger (WithLogs)
-import Todo (Todo (..), TodoState (..))
+import Todo (Todo (..), TodoState (..), FinalStateProvider(..))
 
 data AddTodoCommandResult = AddTodoCommandResult
   { addedTodos :: [Todo],

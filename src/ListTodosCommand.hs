@@ -1,8 +1,8 @@
 module ListTodosCommand where
 
-import Classes (FinalStateProvider (..), PresentableProvider (..))
+import Classes (PresentableProvider (..))
 import Logger (WithLogs)
-import Todo (Todo (..), TodoState (..))
+import Todo (Todo (..), TodoState (..), FinalStateProvider(..))
 
 newtype ListTodosCommandResult = ListTodosCommandResult TodoState
 

@@ -5,6 +5,7 @@ import State (runState)
 import Logger (initialLogState, Logs(..))
 import Todo (Todo(..), TodoState(..), DoneTodo(..), newTodoState)
 import CheckTodoCommand (CheckTodoCommandResult(..), getTodosByNumber, checkTodosFromState, notContained)
+import TimeTestData (testLocalTime)
 
 testState :: TodoState
 testState = TodoState { 
@@ -14,7 +15,8 @@ testState = TodoState {
                     Todo { orderNumber = 3, todoDescription = "existed before 3"},
                     Todo { orderNumber = 4, todoDescription = "existed before 4"}
                 ],
-                doneTodos = [DoneTodo { doneDescription = "done"}]
+                doneTodos = [DoneTodo { doneDescription = "done"}],
+                currentDate = testLocalTime
         }
 expectedState :: TodoState
 expectedState = TodoState { 
@@ -25,7 +27,8 @@ expectedState = TodoState {
                 doneTodos = [DoneTodo { doneDescription = "done"},
                     DoneTodo { doneDescription = "existed before 2"},
                     DoneTodo { doneDescription = "existed before 4"}
-                ]
+                ],
+                currentDate = testLocalTime
         }
 
 spec :: Spec

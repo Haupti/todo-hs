@@ -1,14 +1,15 @@
 module Lib where
 
-import Classes (FinalStateProvider (..), Presenter (..))
+import Classes (Presenter (..))
 import Command (Command (..), CommandParsingError (..), commandParsingFailedError, getCalledCommand, handleCommand)
+import Time (localTime)
 import Control.Monad (when)
 import Data.Function ((&))
 import Data.Maybe (isNothing)
 import Logger (initialLogState, showLogs)
 import Repository (getState, saveState)
 import State (runState)
-import Todo (TodoState (..))
+import Todo (TodoState (..), FinalStateProvider(..))
 
 noStateError :: IO ()
 noStateError = putStrLn "ERROR: loading state failed: state was nothing, should have been just the state"
@@ -20,6 +21,7 @@ todo :: IO ()
 todo = do
   commandParsingResult <- getCalledCommand
   savedState <- getState
+  time <- localTime
 
   logIfNoState savedState
   logIfError commandParsingResult

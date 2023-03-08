@@ -1,12 +1,12 @@
 module CheckTodoCommand where
 
-import Classes (FinalStateProvider (..), PresentableProvider (..))
+import Classes (PresentableProvider (..))
 import Control.Monad (unless)
 import Data.Function ((&))
 import Data.List ((\\))
 import Logger (WithLogs, addInfo)
 import State (modify)
-import Todo (DoneTodo (..), Todo (..), TodoState (..))
+import Todo (DoneTodo (..), Todo (..), TodoState (..), FinalStateProvider(..))
 
 data CheckTodoCommandResult = CheckTodoCommandResult
   { checkedTodos :: [DoneTodo],
@@ -44,4 +44,4 @@ getTodosByNumber orderNumbers state =
   todos state & filter (\(Todo orderNum _) -> orderNum `elem` orderNumbers)
 
 notContained :: [Int] -> TodoState -> [Int]
-notContained nums (TodoState tds _) = map orderNumber tds & (\\) nums
+notContained nums (TodoState tds _ _) = map orderNumber tds & (\\) nums

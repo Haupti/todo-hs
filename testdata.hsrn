@@ -1,1 +1,1 @@
-TodoState {todos = [], doneTodos = []}
+TodoState {todos = [], doneTodos = [], currentDate = LocalTime {getLocalDate = LocalDate {getYear = 1970, getMonth = 1, getDay = 1}, getHour = 0, getMinute = 0, getSecond = 0}}

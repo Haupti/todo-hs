@@ -39,6 +39,13 @@ packages:
       sha256: ac3cf1dc9ef397512d4bf8f2c3fbe4d64fb8aabd253288b34bf86c09ae234d4f
   original:
     hackage: mtl-2.3.1
+- completed:
+    hackage: time-1.11.1.2@sha256:a957467595420495c2dd440d9efa1f58c62277cf9438c7e7a515d7a4c65571ec,6287
+    pantry-tree:
+      size: 7048
+      sha256: b7025dd19573d4c082d072eaba093a3fc1f891f3fde09b59561bcdca3566a0a4
+  original:
+    hackage: time-1.11.1.2
 snapshots:
 - completed:
     size: 649342

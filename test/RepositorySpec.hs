@@ -6,6 +6,7 @@ import Repository (getStateFromFile, saveStateToFile)
 import System.Directory (doesFileExist, removeFile)
 import Test.Hspec (Spec, SpecWith, before, describe, it, shouldBe)
 import Todo (DoneTodo (..), Todo (..), TodoState (..), newTodoState)
+import TimeTestData (testLocalTime)
 
 testFolderName :: FolderPath
 testFolderName = ""
@@ -17,7 +18,8 @@ testState :: TodoState
 testState =
   TodoState
     { todos = [Todo {orderNumber = 1, todoDescription = "active todo for test"}],
-      doneTodos = [DoneTodo {doneDescription = "done todo for test"}]
+      doneTodos = [DoneTodo {doneDescription = "done todo for test"}],
+      currentDate = testLocalTime
     }
 
 beforeSpecHook :: SpecWith () -> Spec

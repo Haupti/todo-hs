@@ -46,6 +46,7 @@ extra-deps:
   - hspec-discover-2.8.4
   - directory-1.3.6.2
   - mtl-2.3.1
+  - time-1.11.1.2
 
 # Override default flag values for local packages and extra-deps
 # flags: {}

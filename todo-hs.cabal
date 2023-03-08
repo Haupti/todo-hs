@@ -35,6 +35,7 @@ library
       Logger
       Repository
       State
+      Time
       Todo
   other-modules:
       Paths_todo_hs
@@ -45,6 +46,7 @@ library
       base >=4.7 && <5
     , directory
     , mtl
+    , time
   default-language: Haskell2010
 
 executable todo-hs-exe
@@ -58,6 +60,7 @@ executable todo-hs-exe
       base >=4.7 && <5
     , directory
     , mtl
+    , time
     , todo-hs
   default-language: Haskell2010
 
@@ -71,6 +74,7 @@ test-suite todo-hs-test
       ListTodosCommandSpec
       RepositorySpec
       TestUtils
+      TimeSpec
       Paths_todo_hs
   hs-source-dirs:
       test
@@ -83,5 +87,6 @@ test-suite todo-hs-test
     , hspec-discover
     , hspec-expectations
     , mtl
+    , time
     , todo-hs
   default-language: Haskell2010
