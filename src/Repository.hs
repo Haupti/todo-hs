@@ -1,17 +1,22 @@
 module Repository where
 
-import Config (filepath)
-import Control.Exception (IOException, catch)
+import Config (FolderPath, filepath, folderpath)
+import Control.Exception (IOException, SomeException, catch)
+import Control.Monad (unless)
 import Data.Functor ((<&>))
+import System.Directory (createDirectoryIfMissing)
 import Text.Read (readMaybe)
 import Todo (TodoState, newTodoState)
 
 getState :: IO (Maybe TodoState)
-getState = filepath >>= getStateFromFile
+getState = do
+  file <- filepath
+  folder <- folderpath
+  getStateFromFile file folder
 
-getStateFromFile :: FilePath -> IO (Maybe TodoState)
-getStateFromFile filepath =
-  readFileWithFallback filepath
+getStateFromFile :: FilePath -> FolderPath -> IO (Maybe TodoState)
+getStateFromFile file folder =
+  readFileWithFallback file folder
     <&> ( \content ->
             if not (null content)
               then (readMaybe content :: Maybe TodoState)
@@ -20,16 +25,20 @@ getStateFromFile filepath =
 
 saveState :: TodoState -> IO (Maybe TodoState)
 saveState todoState = do
-  fp <- filepath
-  saveStateToFile fp todoState
+  file <- filepath
+  folder <- folderpath
+  saveStateToFile file folder todoState
 
-saveStateToFile :: FilePath -> TodoState -> IO (Maybe TodoState)
-saveStateToFile filepath state =
-  writeFile filepath (show state)
-    >> getStateFromFile filepath
+saveStateToFile :: FilePath -> FolderPath -> TodoState -> IO (Maybe TodoState)
+saveStateToFile file folder state =
+  writeFile file (show state)
+    >> getStateFromFile file folder
 
-readFileWithFallback :: FilePath -> IO String
-readFileWithFallback filepath = catch (readFile filepath) fallback
+readFileWithFallback :: FilePath -> FolderPath -> IO String
+readFileWithFallback file folder = catch (readFile file) fallback
   where
-    fallback :: IOException -> IO String
-    fallback _ = writeFile filepath "" >> return ""
+    fallback :: SomeException -> IO String
+    fallback _ = do
+      unless (folder == "") (createDirectoryIfMissing True folder)
+      writeFile file ""
+      return ""
