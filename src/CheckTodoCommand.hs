@@ -6,7 +6,7 @@ import Data.Function ((&))
 import Data.List ((\\))
 import Logger (WithLogs, addInfo)
 import State (modify)
-import Todo (DoneTodo (..), Todo (..), TodoState (..), FinalStateProvider(..))
+import Todo (DoneTodo (..), FinalStateProvider (..), Todo (..), TodoState (..))
 
 data CheckTodoCommandResult = CheckTodoCommandResult
   { checkedTodos :: [DoneTodo],
@@ -17,7 +17,7 @@ instance FinalStateProvider CheckTodoCommandResult where
   provideFinalState = todoStateAfterChecking
 
 instance PresentableProvider CheckTodoCommandResult where
-  providePresentable (CheckTodoCommandResult checked _) = unlines $ map doneDescription checked
+  providePresentable (CheckTodoCommandResult checked _) = unlines $ map (\dn -> providePresentable (timeStamp dn) ++ " " ++ doneDescription dn) checked
 
 checkTodos :: [Int] -> TodoState -> WithLogs CheckTodoCommandResult
 checkTodos = checkTodosFromState
@@ -25,7 +25,7 @@ checkTodos = checkTodosFromState
 checkTodosFromState :: [Int] -> TodoState -> WithLogs CheckTodoCommandResult
 checkTodosFromState nums state =
   let toCheck = getTodosByNumber nums state :: [Todo]
-      asChecked = map (\(Todo _ description) -> DoneTodo {doneDescription = description}) toCheck
+      asChecked = map (\(Todo _ description) -> DoneTodo {doneDescription = description, timeStamp = currentDate state}) toCheck
       notFound = notContained nums state
    in do
         unless (null notFound) (modify (addInfo $ "INFO: can not check todos: " ++ show notFound ++ ". not found."))

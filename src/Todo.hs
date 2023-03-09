@@ -11,8 +11,9 @@ data Todo = Todo
   }
   deriving (Read, Show, Eq)
 
-newtype DoneTodo = DoneTodo
-  { doneDescription :: String
+data DoneTodo = DoneTodo
+  { doneDescription :: String,
+    timeStamp :: LocalTime
   }
   deriving (Read, Show, Eq)
 

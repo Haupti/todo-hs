@@ -1,34 +1,19 @@
 module RepositorySpec where
 
-import Config (FolderPath)
-import Control.Monad (when)
 import Repository (getStateFromFile, saveStateToFile)
-import System.Directory (doesFileExist, removeFile)
+import SpecHooks (beforeSpecHook, testFileName, testFolderName)
 import Test.Hspec (Spec, SpecWith, before, describe, it, shouldBe)
-import Todo (DoneTodo (..), Todo (..), TodoState (..), newTodoState)
 import TimeTestData (testLocalTime)
-
-testFolderName :: FolderPath
-testFolderName = ""
-
-testFileName :: FilePath
-testFileName = testFolderName ++ "testdata.hsrn"
+import Todo (DoneTodo (..), Todo (..), TodoState (..), newTodoState)
+import TodoTestData (createDone)
 
 testState :: TodoState
 testState =
   TodoState
     { todos = [Todo {orderNumber = 1, todoDescription = "active todo for test"}],
-      doneTodos = [DoneTodo {doneDescription = "done todo for test"}],
+      doneTodos = [createDone "done todo for test"],
       currentDate = testLocalTime
     }
-
-beforeSpecHook :: SpecWith () -> Spec
-beforeSpecHook =
-  before
-    ( do
-        isFileExists <- doesFileExist testFileName
-        when isFileExists (removeFile testFileName)
-    )
 
 spec :: Spec
 spec = do

@@ -2,13 +2,14 @@ module ListTodosCommandSpec where
 
 import Classes (providePresentable)
 import Data.Function ((&))
-import TimeTestData (testLocalTime)
 import ListTodosCommand (ListTodosCommandResult (..), listTodos)
 import Logger (Logs (..), initialLogState)
 import State (runState)
 import Test.Hspec (Spec, describe, it, shouldBe)
 import TestUtils (asExpectation)
+import TimeTestData (testLocalTime)
 import Todo (DoneTodo (..), Todo (..), TodoState (..), newTodoState, provideFinalState)
+import TodoTestData (createDone)
 
 testState :: TodoState
 testState =
@@ -17,7 +18,7 @@ testState =
         [ Todo {orderNumber = 1, todoDescription = "existed before 1"},
           Todo {orderNumber = 2, todoDescription = "existed before 2"}
         ],
-      doneTodos = [DoneTodo {doneDescription = "done"}],
+      doneTodos = [createDone "done"],
       currentDate = testLocalTime
     }
 

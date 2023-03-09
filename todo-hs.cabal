@@ -73,8 +73,11 @@ test-suite todo-hs-test
       CommandSpec
       ListTodosCommandSpec
       RepositorySpec
+      SpecHooks
       TestUtils
       TimeSpec
+      TimeTestData
+      TodoTestData
       Paths_todo_hs
   hs-source-dirs:
       test
