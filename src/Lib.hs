@@ -20,8 +20,7 @@ stateFailedToSaveError = putStrLn "ERROR: saving state failed: state was nothing
 todo :: IO ()
 todo = do
   commandParsingResult <- getCalledCommand
-  savedState <- getState
-  time <- localTime
+  savedState <- addCurrentTime getState
 
   logIfNoState savedState
   logIfError commandParsingResult
@@ -46,3 +45,11 @@ logIfError (Left _) = return ()
 logIfNoState :: Maybe TodoState -> IO ()
 logIfNoState Nothing = noStateError
 logIfNoState (Just _) = return ()
+
+addCurrentTime :: IO (Maybe TodoState) -> IO (Maybe TodoState)
+addCurrentTime ioMayState = do
+  mayState <- ioMayState
+  time <- localTime
+  return $ case mayState of 
+    Nothing -> Nothing
+    Just state -> Just $ state { currentDate = time }
