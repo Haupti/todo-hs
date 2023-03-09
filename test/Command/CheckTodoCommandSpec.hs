@@ -1,6 +1,6 @@
-module CheckTodoCommandSpec where
+module Command.CheckTodoCommandSpec where
 
-import CheckTodoCommand (CheckTodoCommandResult (..), checkTodosFromState, getTodosByNumber, notContained)
+import Command.CheckTodoCommand (CheckTodoCommandResult (..), checkTodosFromState, getTodosByNumber, notContained)
 import Logger (Logs (..), initialLogState)
 import SpecHooks (beforeSpecHook)
 import State (runState)

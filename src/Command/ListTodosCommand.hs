@@ -1,4 +1,4 @@
-module ListTodosCommand where
+module Command.ListTodosCommand where
 
 import Classes (PresentableProvider (..))
 import Logger (WithLogs)

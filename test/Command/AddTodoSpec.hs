@@ -1,6 +1,6 @@
-module AddTodoSpec where
+module Command.AddTodoSpec where
 
-import AddTodoCommand (AddTodoCommandResult (..), addTodos, addTodosToState, mapToNewTodos)
+import Command.AddTodoCommand (AddTodoCommandResult (..), addTodos, addTodosToState, mapToNewTodos)
 import Data.Function ((&))
 import Logger (Logs (..), initialLogState)
 import State (runState)

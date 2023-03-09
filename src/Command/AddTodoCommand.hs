@@ -1,4 +1,4 @@
-module AddTodoCommand where
+module Command.AddTodoCommand where
 
 import Classes (PresentableProvider (..))
 import Data.Function ((&))

@@ -1,10 +1,10 @@
-module Command where
+module Command.Command where
 
-import AddTodoCommand (addTodos)
-import CheckTodoCommand (checkTodos)
+import Command.AddTodoCommand (addTodos)
+import Command.CheckTodoCommand (checkTodos)
 import Classes (PresentableProvider (providePresentable), Presenter (..))
 import Data.Maybe (mapMaybe)
-import ListTodosCommand (listTodos)
+import Command.ListTodosCommand (listTodos)
 import Logger (WithLogs)
 import System.Environment (getArgs)
 import Text.Read (readMaybe)

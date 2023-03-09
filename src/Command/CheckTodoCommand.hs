@@ -1,4 +1,4 @@
-module CheckTodoCommand where
+module Command.CheckTodoCommand where
 
 import Classes (PresentableProvider (..))
 import Control.Monad (unless)

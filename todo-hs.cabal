@@ -25,13 +25,13 @@ source-repository head
 
 library
   exposed-modules:
-      AddTodoCommand
-      CheckTodoCommand
       Classes
-      Command
+      Command.AddTodoCommand
+      Command.CheckTodoCommand
+      Command.Command
+      Command.ListTodosCommand
       Config
       Lib
-      ListTodosCommand
       Logger
       Repository
       State
@@ -68,10 +68,10 @@ test-suite todo-hs-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      AddTodoSpec
-      CheckTodoCommandSpec
-      CommandSpec
-      ListTodosCommandSpec
+      Command.AddTodoSpec
+      Command.CheckTodoCommandSpec
+      Command.CommandSpec
+      Command.ListTodosCommandSpec
       RepositorySpec
       SpecHooks
       TestUtils

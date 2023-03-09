@@ -1,7 +1,7 @@
 module Lib where
 
 import Classes (Presenter (..))
-import Command (Command (..), CommandParsingError (..), commandParsingFailedError, getCalledCommand, handleCommand)
+import Command.Command (Command (..), CommandParsingError (..), commandParsingFailedError, getCalledCommand, handleCommand)
 import Time (localTime)
 import Control.Monad (when)
 import Data.Function ((&))

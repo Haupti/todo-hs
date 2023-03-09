@@ -1,8 +1,8 @@
-module ListTodosCommandSpec where
+module Command.ListTodosCommandSpec where
 
 import Classes (providePresentable)
 import Data.Function ((&))
-import ListTodosCommand (ListTodosCommandResult (..), listTodos)
+import Command.ListTodosCommand (ListTodosCommandResult (..), listTodos)
 import Logger (Logs (..), initialLogState)
 import State (runState)
 import Test.Hspec (Spec, describe, it, shouldBe)

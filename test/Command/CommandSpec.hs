@@ -1,7 +1,7 @@
-module CommandSpec where
+module Command.CommandSpec where
 
 import Test.Hspec (Spec, describe, it, shouldBe)
-import Command (parseCalledCommand, CommandParsingError(..), Command(..))
+import Command.Command (parseCalledCommand, CommandParsingError(..), Command(..))
 import Todo (Todo(..))
 
 spec :: Spec
