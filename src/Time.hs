@@ -1,4 +1,16 @@
-module Time (localDate, localTime, LocalDate (..), LocalTime (..), zeroLocalTime) where
+module Time (
+  localDate,
+  localTime,
+  LocalDate (..),
+  LocalTime (..),
+  zeroLocalTime,
+  Year,
+  Month,
+  Day,
+  Hour,
+  Minute,
+  Second
+  ) where
 
 import Classes (PresentableProvider (providePresentable), Presenter (..))
 import Data.Fixed (Pico)
@@ -6,9 +18,17 @@ import Data.Time (getCurrentTime, getTimeZone, localDay, localTimeOfDay, toGrego
 import qualified Data.Time as T
 import GHC.Float.RealFracMethods (floorDoubleInt)
 
-data LocalDate = LocalDate {getYear :: Int, getMonth :: Int, getDay :: Int} deriving (Show, Eq, Read)
 
-data LocalTime = LocalTime {getLocalDate :: LocalDate, getHour :: Int, getMinute :: Int, getSecond :: Int} deriving (Show, Eq, Read)
+type Year = Int
+type Month = Int
+type Day = Int
+type Hour = Int
+type Minute = Int
+type Second = Int
+
+data LocalDate = LocalDate {getYear :: Year, getMonth :: Month, getDay :: Day } deriving (Show, Eq, Read)
+
+data LocalTime = LocalTime {getLocalDate :: LocalDate, getHour :: Hour, getMinute :: Minute, getSecond :: Second} deriving (Show, Eq, Read)
 
 dateSeparator :: String
 dateSeparator = "-"
