@@ -1,17 +1,18 @@
 module Command.Command where
 
+import Classes (PresentableProvider (providePresentable), Presenter (..))
 import Command.AddTodoCommand (addTodos)
 import Command.CheckTodoCommand (checkTodos)
-import Classes (PresentableProvider (providePresentable), Presenter (..))
-import Data.Maybe (mapMaybe)
-import Command.ListTodosCommand (listTodos)
+import Command.HelpCommand (help)
 import Command.ListDonesCommand (listDones)
+import Command.ListTodosCommand (listTodos)
+import Data.Maybe (mapMaybe)
 import Logger (WithLogs)
 import System.Environment (getArgs)
 import Text.Read (readMaybe)
-import Todo (TodoState (..), FinalStateProvider(..))
+import Todo (FinalStateProvider (..), TodoState (..))
 
-data Command = AddTodo [String] | CheckTodo [Int] | ListTodos | ListDones deriving (Show, Eq)
+data Command = AddTodo [String] | CheckTodo [Int] | ListTodos | ListDones | Help deriving (Show, Eq)
 
 data CommandParsingError = NoSuchCommand String | MissingParamError String String | NoSuchOptions String [String] | NoCommand deriving (Show, Eq)
 
@@ -24,7 +25,9 @@ parseCalledCommand (x : xs)
   | x == "done" && null xs = Right $ MissingParamError "done" "integer | [integer]"
   | x == "list" && null xs = Left ListTodos
   | x == "list" && xs == ["--done"] = Left ListDones
-  | x == "list" && not (null xs) = Right $ NoSuchOptions "list" xs 
+  | x == "list" && not (null xs) = Right $ NoSuchOptions "list" xs
+  | x == "--help" && null xs = Left Help
+  | x == "--help" && not (null xs) = Right $ NoSuchOptions "done" xs
   | otherwise = Right $ NoSuchCommand x
 
 handleCommand :: Command -> TodoState -> WithLogs CommandResult
@@ -33,6 +36,7 @@ handleCommand cmd tds = case cmd of
   CheckTodo todosToCheck -> toResult <$> checkTodos todosToCheck tds
   ListTodos -> toResult <$> listTodos tds
   ListDones -> toResult <$> listDones tds
+  Help -> toResult <$> help tds
   where
     toResult :: (PresentableProvider a, FinalStateProvider a) => a -> CommandResult
     toResult a = CommandResult {presentable = providePresentable a, finalState = provideFinalState a}
