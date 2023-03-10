@@ -6,13 +6,14 @@ import Command.CheckTodoCommand (checkTodos)
 import Command.HelpCommand (help)
 import Command.ListDonesCommand (listDones)
 import Command.ListTodosCommand (listTodos)
+import Command.PurgeCommand (purgeTodos)
 import Data.Maybe (mapMaybe)
 import Logger (WithLogs)
 import System.Environment (getArgs)
 import Text.Read (readMaybe)
 import Todo (FinalStateProvider (..), TodoState (..))
 
-data Command = AddTodo [String] | CheckTodo [Int] | ListTodos | ListDones | Help deriving (Show, Eq)
+data Command = AddTodo [String] | CheckTodo [Int] | ListTodos | ListDones | PurgeTodos [Int] | Help deriving (Show, Eq)
 
 data CommandParsingError = NoSuchCommand String | MissingParamError String String | NoSuchOptions String [String] | NoCommand deriving (Show, Eq)
 
@@ -28,6 +29,8 @@ parseCalledCommand (x : xs)
   | x == "list" && not (null xs) = Right $ NoSuchOptions "list" xs
   | x == "--help" && null xs = Left Help
   | x == "--help" && not (null xs) = Right $ NoSuchOptions "done" xs
+  | x == "purge" && not (null xs) = Left $ PurgeTodos (readIntAndDiscardFailureSilently xs)
+  | x == "purge" && null xs = Right $ MissingParamError "purge" "integer | [integer]"
   | otherwise = Right $ NoSuchCommand x
 
 handleCommand :: Command -> TodoState -> WithLogs CommandResult
@@ -37,6 +40,7 @@ handleCommand cmd tds = case cmd of
   ListTodos -> toResult <$> listTodos tds
   ListDones -> toResult <$> listDones tds
   Help -> toResult <$> help tds
+  PurgeTodos todosToPurge -> toResult <$> purgeTodos todosToPurge tds
   where
     toResult :: (PresentableProvider a, FinalStateProvider a) => a -> CommandResult
     toResult a = CommandResult {presentable = providePresentable a, finalState = provideFinalState a}

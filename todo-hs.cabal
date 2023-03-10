@@ -32,6 +32,7 @@ library
       Command.HelpCommand
       Command.ListDonesCommand
       Command.ListTodosCommand
+      Command.PurgeCommand
       Config
       Lib
       Logger
@@ -76,6 +77,7 @@ test-suite todo-hs-test
       Command.HelpCommandSpec
       Command.ListDonesCommandSpec
       Command.ListTodosCommandSpec
+      Command.PurgeCommandSpec
       RepositorySpec
       SpecHooks
       TestUtils
