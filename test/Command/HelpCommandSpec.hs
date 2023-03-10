@@ -35,8 +35,9 @@ spec = do
           presentable = providePresentable helpResult
        in presentable
             `shouldBe` unlines
-              [ "add [string]       adds todos to active. takes list of space separated todo descriptions",
-                "done [int]         checks todos and moves them to done. takes list of space separated numbers",
+              [ "add                adds todos to active. takes list of space separated todo descriptions",
+                "done               checks todos and moves them to done. takes list of space separated numbers",
                 "list [--done]      lists active todos. lists done todos with check date when using option --done.",
+                "purge              purges active todos from existence, does not add to done todos. takes a list of space separated numbers",
                 "--help             shows these infos"
               ]
